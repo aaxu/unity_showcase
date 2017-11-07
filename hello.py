@@ -1,5 +1,6 @@
 from flask import Flask, flash, redirect, render_template, request, session, abort
 from random import randint
+from selenium import webdriver
 
 app = Flask(__name__)
 
@@ -8,26 +9,31 @@ app = Flask(__name__)
 def index():
     return "Index!"
 
-@app.route("/hello/<string:name>/")
-def hello_person(name):
-    quotes = [
-        "'If people do not believe that mathematics is simple, it is only because they do not realize how complicated life is.' -- John Louis von Neumann ",
-        "'Computer science is no more about computers than astronomy is about telescopes' --  Edsger Dijkstra ",
-        "'To understand recursion you must first understand recursion..' -- Unknown",
-        "'You look at things that are and ask, why? I dream of things that never were and ask, why not?' -- Unknown",
-        "'Mathematics is the key and door to the sciences.' -- Galileo Galilei",
-        "'Not everyone will understand your journey. Thats fine. Its not their journey to make sense of. Its yours.' -- Unknown"]
-    randomNumber = randint(0, len(quotes) - 1)
-    quote = quotes[randomNumber]
-    return render_template("hello.html", **locals())
+@app.route("/random")
+def random():
+    driver = webdriver.PhantomJS()
+    driver.get("https://unity3d.com/showcase/gallery/")
+    xpath_beginning = '//*[@id="main-wrapper"]/div[4]/ul/li['
 
-@app.route("/members")
-def members():
-    return "Members"
+    # Should set 20 to some dynamic value that depends on the number of
+    # actual games in the gallery. Can click button by finding xpath
+    # '//*[@id="main-wrapper"]/div[5]/div/div' until it doesn't show up.
+    game_number = randint(1, 20)
+    xpath_end = ']'
+    xpath = xpath_beginning + str(game_number) + xpath_end
+    driver.find_element_by_xpath(xpath).click()
+    inner = driver.find_element_by_css_selector(".expanded").get_attribute('innerHTML')
+    return inner.encode('utf-8')
 
-@app.route("/members/<string:name>/")
-def getMember(name):
-    return render_template('hello.html', name=name)
+
+    # randomNumber = randint(0, len(quotes) - 1)
+    # quote = quotes[randomNumber]
+    # return render_template("hello.html", **locals())
+    # return "RANDOM"
+
+# @app.route("/members/<string:name>/")
+# def getMember(name):
+#     return render_template('hello.html', name=name)
 
 
 if __name__ == "__main__":
