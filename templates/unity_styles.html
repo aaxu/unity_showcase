@@ -1,0 +1,48 @@
+<html>
+<head>
+    <title>Website</title>
+<style>
+
+div.details-wrapper div.images {
+    width: 300px;
+    float: left;
+    padding: 20px;
+    position: relative;
+    z-index: 2;
+}
+
+div.details-wrapper div.meta {
+    width: 100%;
+    float: right;
+    margin: 0 0 0 -340px;
+    position: relative;
+    z-index: 1;
+    padding: 20px;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+div.details-wrapper div.meta div.wrap {
+    margin: 0 0 0 340px;
+}
+
+div.details-wrapper .terms-lbl {
+    padding: 0 15px 0 0;
+}
+
+@media only screen and (min-width:1590px) and (max-width:1909px) {
+    ul.gamelist,
+    div.loadbg {
+        max-width: 1550px;
+    }
+}
+
+</style>
+
+</head>
+<body>
+ {% block body %}{% endblock %}
+
+</body>
+</html>
