@@ -1,4 +1,4 @@
-from flask import Flask, flash, redirect, render_template, request, session, abort
+from flask import Flask, flash, redirect, render_template, request, session, abort, Markup
 from random import randint
 from selenium import webdriver
 
@@ -23,17 +23,17 @@ def random():
     xpath = xpath_beginning + str(game_number) + xpath_end
     driver.find_element_by_xpath(xpath).click()
     inner = driver.find_element_by_css_selector(".expanded").get_attribute('innerHTML')
-    return inner.encode('utf-8')
+    return render_template('template.html', html_body=Markup(inner))
 
 
     # randomNumber = randint(0, len(quotes) - 1)
     # quote = quotes[randomNumber]
-    # return render_template("hello.html", **locals())
+    # return render_template("template.html", **locals())
     # return "RANDOM"
 
 # @app.route("/members/<string:name>/")
 # def getMember(name):
-#     return render_template('hello.html', name=name)
+#     return render_template('template.html', name=name)
 
 
 if __name__ == "__main__":
