@@ -1,13 +1,13 @@
-from flask import Flask, render_template, Markup
+from flask import Flask, render_template, Markup, session
 from selenium import webdriver
 from bs4 import BeautifulSoup
 import time
 import random
+import os
 
 app = Flask(__name__)
 games_found = 0
 driver = webdriver.PhantomJS(service_args=['--load-images=no'])
-visited = set()
 cached_html = {}
 
 @app.route("/")
@@ -31,6 +31,7 @@ def random_game():
         driver.get("https://unity3d.com/showcase/gallery/")
         elem = driver.find_element_by_xpath('//*[@id="main-wrapper"]/div[5]/div/div')
         try:
+            # Click the Load More button to get all the games on the page.
             while elem:
                 elem.click()
                 time.sleep(0.1)
@@ -62,13 +63,16 @@ def get_random_game(possible_game_numbers):
     Returns:
         A random game number that has not yet been visited
     """
-    global visited
+    visited = set(session.get('visited') or set())
     not_visited = tuple((possible_game_numbers - visited))
     if not not_visited:
         visited = set()
         not_visited = tuple((possible_game_numbers - visited))
     random_game_number = random.choice(not_visited)
     visited.add(random_game_number)
+    # Must convert set to immutable object
+    # before storing session data or it will error out.
+    session['visited'] = tuple(visited)
     return random_game_number
 
 def get_game_xpath(game_number):
@@ -87,4 +91,5 @@ def get_game_xpath(game_number):
     return xpath_beginning + str(game_number) + xpath_end
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0')
+    app.secret_key = os.urandom(32)
+    app.run()
