@@ -1,11 +1,13 @@
-from flask import Flask, render_template, Markup, session, redirect, url_for
-from selenium import webdriver
-from bs4 import BeautifulSoup
 import time
 import random
 import os
+from flask_compress import Compress
+from flask import Flask, render_template, Markup, session, redirect, url_for
+from selenium import webdriver
+from bs4 import BeautifulSoup
 
 app = Flask(__name__)
+Compress(app)
 games_found = 0
 # Don't load images to speed up load times
 driver = webdriver.PhantomJS(service_args=['--load-images=no'])
