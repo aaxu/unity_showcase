@@ -7,6 +7,7 @@ import os
 
 app = Flask(__name__)
 games_found = 0
+# Don't load images to speed up load times
 driver = webdriver.PhantomJS(service_args=['--load-images=no'])
 cached_html = {}
 
@@ -29,11 +30,14 @@ def random_game():
     # Cache games and reload the page if we found less than 77 games.
     if games_found < 77:
         driver.get("https://unity3d.com/showcase/gallery/")
-        elem = driver.find_element_by_xpath('//*[@id="main-wrapper"]/div[5]/div/div')
+        load_button = driver.find_element_by_xpath('//*[@id="main-wrapper"]/div[5]/div/div')
         try:
             # Click the Load More button to get all the games on the page.
-            while elem:
-                elem.click()
+            # This can non-deterministically not get all the games
+            # but I found that a sleep time of 0.1 is sufficient to load the
+            # javascript and parse the html after the button click.
+            while load_button:
+                load_button.click()
                 time.sleep(0.1)
         except:
             pass
