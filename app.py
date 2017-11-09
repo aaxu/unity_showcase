@@ -1,4 +1,4 @@
-from flask import Flask, render_template, Markup, session
+from flask import Flask, render_template, Markup, session, redirect, url_for
 from selenium import webdriver
 from bs4 import BeautifulSoup
 import time
@@ -12,7 +12,7 @@ cached_html = {}
 
 @app.route("/")
 def index():
-    return "Index!"
+    return redirect(url_for('random_game'))
 
 @app.route("/random")
 def random_game():
